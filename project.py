@@ -1,3 +1,4 @@
+
 import pygame
 import time
 import random
@@ -26,6 +27,7 @@ pygame.display.set_caption(gamename)
 intro_sound=pygame.mixer.Sound('intro_sound.wav')
 intro_background=pygame.image.load('game_intro.jpg')
 monster_1=pygame.image.load('monster_1.jpg')
+dragon_1=pygame.image.load('black_dragon.jpg')
 
 def button(msg,x,y,w,h,ic,ac,action=None):
         mouse=pygame.mouse.get_pos()
@@ -71,17 +73,18 @@ def intro():
 def game_loop():
 	pygame.mixer.Sound.stop(intro_sound)
 	score=0
-        no_of_elements=[1]
         enemy_count=1
         thing_startx=random.sample(range(1200,2400),enemy_count)
-        thing_starty=400
+        thing_starty1=400
+	thing_starty2=150
         x_change=-10
         lead_x=210
         lead_y=220
         lead_x_change=0
         bulletList=[]
         bulletList_slope=[]
-	
+	monster_identify=[1]
+
 	while True:
 		blast=0
         	for event in pygame.event.get():
@@ -101,9 +104,8 @@ def game_loop():
                     if XnY[0]>display_width or XnY[1]>display_height or XnY[1]<0:
                         del bulletList[c]
                         del bulletList_slope[c]
-                    c += 1    
+                    c += 1
 
-				
             	gameDisplay.fill(black)
             	pygame.draw.rect(gameDisplay,colour_ground,[0,500,1200,100])
                 pygame.draw.rect(gameDisplay,colour_sky,[0,0,1200,500])
@@ -114,15 +116,38 @@ def game_loop():
                 gameDisplay.blit(clouds, [1000,20])
                 fire(bulletList)
                 gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('SCORE:'+str(score),True,red),[10,520])
-		for pos in thing_startx:
-                        gameDisplay.blit(monster_1,(pos,thing_starty))
+		if len(thing_startx)==0:
+                        thing_startx=random.sample(range(1200,2400),enemy_count)
+                        for i in range(0,len(thing_startx)):
+                                x=random.choice([True,False])
+                                if x==True:
+                                        if i<len(monster_identify):
+                                                monster_identify[i]=1
+                                        else:
+                                                monster.append(1)
+                                else:
+                                        if i<len(monster_identify):
+                                                monster_identify[i]=0
+                                        else:
+                                                monster.append(1)
+
+                for i in range(0,len(thing_startx)):
+                        if monster_identify[i]==1:
+                                gameDisplay.blit(monster_1,(thing_startx[i],thing_starty1))
+                        else :
+                                gameDisplay.blit(dragon_1,(thing_startx[i],thing_starty2))
                 for i in range(0,len(thing_startx)):
                         thing_startx[i]=thing_startx[i]+x_change
+                pygame.display.update()
+                if score>30:
+                        enemy_count+=1
+                        thing_startx=random.sample(range(1200,2400),enemy_count)
 	    	pygame.display.update()
 		for i in range(0,len(thing_startx)):
                         if thing_startx[i]<249:
 				del thing_startx[i]
 				blast=1
+				score-=10
 		if blast==1:
 			pygame.mixer.Sound.play(explosion)
 			blast=0
