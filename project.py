@@ -19,11 +19,12 @@ FPS=20
 castle=pygame.image.load('castle.png')
 clouds = pygame.image.load('clouds.png')
 gamename='RANDOM VARIABLE'
-
+explosion=pygame.mixer.Sound('explosion.wav')
 gameDisplay=pygame.display.set_mode((display_width,display_height));
 pygame.display.set_caption(gamename)
 intro_sound=pygame.mixer.Sound('intro_sound.wav')
 intro_background=pygame.image.load('game_intro.jpg')
+monster_1=pygame.image.load('monster_1.jpg')
 
 def button(msg,x,y,w,h,ic,ac,action=None):
         mouse=pygame.mouse.get_pos()
@@ -63,7 +64,16 @@ def intro():
                 clock.tick(15)
 
 def game_loop():
+	pygame.mixer.Sound.stop(intro_sound)
+	score=0
+        no_of_elements=[1]
+        enemy_count=1
+        thing_startx=random.sample(range(1200,2400),enemy_count)
+        thing_starty=400
+        x_change=-10
+	
 	while True:
+		blast=0
         	for event in pygame.event.get():
                 	if event.type==pygame.QUIT:
                     		pygame.quit()
@@ -76,9 +86,18 @@ def game_loop():
                 gameDisplay.blit(clouds, [550,00])
                 gameDisplay.blit(clouds, [400,40])
                 gameDisplay.blit(clouds, [1000,20])
-
-            	pygame.display.update()
-
+		for pos in thing_startx:
+                        gameDisplay.blit(monster_1,(pos,thing_starty))
+                for i in range(0,len(thing_startx)):
+                        thing_startx[i]=thing_startx[i]+x_change
+	    	pygame.display.update()
+		for i in range(0,len(thing_startx)):
+                        if thing_startx[i]<249:
+				del thing_startx[i]
+				blast=1
+		if blast==1:
+			pygame.mixer.Sound.play(explosion)
+			blast=0
             	clock.tick(FPS)
 
     
