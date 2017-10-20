@@ -15,6 +15,7 @@ colour_ground=(240,245,33)
 colour_sky=(0,100,200)
 display_width=1200
 display_height=600
+bullet_size=15
 FPS=20
 castle=pygame.image.load('castle.png')
 clouds = pygame.image.load('clouds.png')
@@ -45,6 +46,10 @@ def gamequit():
 	pygame.quit()
 	quit()
 
+def fire(bulletList):
+    for XnY in bulletList:
+        pygame.draw.rect(gameDisplay,red,[XnY[0],XnY[1],bullet_size,bullet_size])	
+
 def intro():
 	while True:
                 for event in pygame.event.get():
@@ -71,6 +76,11 @@ def game_loop():
         thing_startx=random.sample(range(1200,2400),enemy_count)
         thing_starty=400
         x_change=-10
+        lead_x=210
+        lead_y=220
+        lead_x_change=0
+        bulletList=[]
+        bulletList_slope=[]
 	
 	while True:
 		blast=0
@@ -78,6 +88,22 @@ def game_loop():
                 	if event.type==pygame.QUIT:
                     		pygame.quit()
 				quit()
+                        if event.type==pygame.MOUSEBUTTONDOWN:
+                            bulletList.append([lead_x,lead_y])
+                            mouse_x,mouse_y=pygame.mouse.get_pos()
+                            print mouse_x,mouse_y
+                            bulletList_slope.append((float)(mouse_y-lead_y)/(mouse_x-lead_x))
+
+                c=0;
+                for XnY in bulletList:
+                    XnY[0] += bullet_size
+                    XnY[1] += bullet_size*bulletList_slope[c]
+                    if XnY[0]>display_width or XnY[1]>display_height or XnY[1]<0:
+                        del bulletList[c]
+                        del bulletList_slope[c]
+                    c += 1    
+
+				
             	gameDisplay.fill(black)
             	pygame.draw.rect(gameDisplay,colour_ground,[0,500,1200,100])
                 pygame.draw.rect(gameDisplay,colour_sky,[0,0,1200,500])
@@ -86,6 +112,8 @@ def game_loop():
                 gameDisplay.blit(clouds, [550,00])
                 gameDisplay.blit(clouds, [400,40])
                 gameDisplay.blit(clouds, [1000,20])
+                fire(bulletList)
+                gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('SCORE:'+str(score),True,red),[10,520])
 		for pos in thing_startx:
                         gameDisplay.blit(monster_1,(pos,thing_starty))
                 for i in range(0,len(thing_startx)):
