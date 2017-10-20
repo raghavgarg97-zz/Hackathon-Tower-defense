@@ -67,7 +67,7 @@ def game_loop():
                 	if event.type==pygame.QUIT:
                     		pygame.quit()
 				quit()
-            	gameDisplay.fill(white)
+            	gameDisplay.fill(black)
             	pygame.draw.rect(gameDisplay,colour_ground,[0,500,1200,100])
                 pygame.draw.rect(gameDisplay,colour_sky,[0,0,1200,500])
             	pygame.display.update()
