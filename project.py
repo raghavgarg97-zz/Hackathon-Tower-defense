@@ -12,11 +12,11 @@ green=(0,200,0)
 bright_green=(0,255,0)
 bright_red=(255,0,0)
 colour_ground=(240,245,33)
-colour_sky=(121,188,255)
+colour_sky=(0,100,200)
 display_width=1200
 display_height=600
 FPS=20
-
+castle=pygame.image.load('castle.png')
 gamename='RANDOM VARIABLE'
 
 gameDisplay=pygame.display.set_mode((display_width,display_height));
@@ -70,6 +70,7 @@ def game_loop():
             	gameDisplay.fill(black)
             	pygame.draw.rect(gameDisplay,colour_ground,[0,500,1200,100])
                 pygame.draw.rect(gameDisplay,colour_sky,[0,0,1200,500])
+                gameDisplay.blit(castle,[10,105])
             	pygame.display.update()
 
             	clock.tick(FPS)
