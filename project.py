@@ -17,6 +17,7 @@ display_width=1200
 display_height=600
 FPS=20
 castle=pygame.image.load('castle.png')
+clouds = pygame.image.load('clouds.png')
 gamename='RANDOM VARIABLE'
 
 gameDisplay=pygame.display.set_mode((display_width,display_height));
@@ -71,6 +72,11 @@ def game_loop():
             	pygame.draw.rect(gameDisplay,colour_ground,[0,500,1200,100])
                 pygame.draw.rect(gameDisplay,colour_sky,[0,0,1200,500])
                 gameDisplay.blit(castle,[10,105])
+                gameDisplay.blit(clouds, [50,0])
+                gameDisplay.blit(clouds, [550,00])
+                gameDisplay.blit(clouds, [400,40])
+                gameDisplay.blit(clouds, [1000,20])
+
             	pygame.display.update()
 
             	clock.tick(FPS)
