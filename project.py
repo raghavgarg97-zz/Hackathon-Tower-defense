@@ -11,6 +11,8 @@ red=(200,0,0)
 green=(0,200,0)
 bright_green=(0,255,0)
 bright_red=(255,0,0)
+colour_ground=(240,245,33)
+colour_sky=(121,188,255)
 display_width=1200
 display_height=600
 FPS=20
@@ -60,12 +62,14 @@ def intro():
                 clock.tick(15)
 
 def game_loop():
-	while not gameExit:
+	while True:
         	for event in pygame.event.get():
                 	if event.type==pygame.QUIT:
                     		pygame.quit()
 				quit()
             	gameDisplay.fill(white)
+            	pygame.draw.rect(gameDisplay,colour_ground,[0,500,1200,100])
+                pygame.draw.rect(gameDisplay,colour_sky,[0,0,1200,500])
             	pygame.display.update()
 
             	clock.tick(FPS)
