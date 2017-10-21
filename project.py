@@ -1,3 +1,4 @@
+
 import pygame
 import time
 import random
@@ -12,8 +13,6 @@ green=(0,200,0)
 bright_green=(0,255,0)
 bright_red=(255,0,0)
 colour_ground=(240,245,33)
-light_silver=(225,225,225)
-dark_silver=(141,141,141)
 colour_sky=(0,100,200)
 display_width=1200
 display_height=600
@@ -33,7 +32,7 @@ dragon_1=pygame.image.load('black_dragon.jpg')
 pygame.mixer.music.load('game.mp3')
 score=0
 music=pygame.mixer.Sound('story.wav')
-fireball=pygame.image.load('fireball.jpg')
+fireball=pygame.image.load('fireball.png')
 tower1=pygame.image.load('tower1.jpg')
 tower2=pygame.image.load('tower2.jpg')
 tower3=pygame.image.load('tower3.jpg')
@@ -44,11 +43,11 @@ grass = pygame.image.load('grass.jpg')
 gamepause= pygame.image.load('pause.jpg')
 musicpause=pygame.image.load('sound.jpg')
 blast=pygame.image.load('blast.gif')
-bonus = pygame.image.load('bonus.png')
-rules = pygame.image.load('rules.png')
 blast_sound=pygame.mixer.Sound('bomb.wav')
+bombimg=pygame.image.load('bomb.jpg')
 pause=False
 p=1
+
 
 
 def button(msg,x,y,w,h,ic,ac,action=None):
@@ -112,12 +111,11 @@ def destroy(bulletList,bulletList_slope,bombList,bombList_slope,thing_startx, th
                     del monster_identify[i]
                     del hit_point[i]
                     score+=10
-                    if score-prev_score>=75:
+                    i-=1
+		    if score-prev_score>=75:
                             if bomb_left<3:
                              bomb_left+=1
                              prev_score=score
-
-                    i-=1
                 i+=1
         c+=1
     c=0
@@ -167,7 +165,7 @@ def fire(bulletList,bombList):
     for XnY in bulletList:
         gameDisplay.blit(fireball,(XnY[0],XnY[1]))
     for XnY in bombList:
-        gameDisplay.blit(fireball,(XnY[0],XnY[1]))
+        gameDisplay.blit(bombimg,(XnY[0],XnY[1]))
 
 def story_line():
 	i=1
@@ -175,13 +173,13 @@ def story_line():
 	pygame.mixer.Sound.play(music) 	
 	gameDisplay.blit(tower1,(0,0))
 	pygame.display.update()
-        time.sleep(10) 	
+        time.sleep(7) 	
 	gameDisplay.blit(tower2,(0,0))
 	pygame.display.update()
-	time.sleep(8)	
+	time.sleep(6)	
 	gameDisplay.blit(tower3,(0,0))
 	pygame.display.update()	
-	time.sleep(8)
+	time.sleep(5)
 	gameDisplay.blit(tower4,(0,0))
 	pygame.display.update()
 	time.sleep(5)
@@ -191,18 +189,6 @@ def story_line():
 	pygame.mixer.Sound.stop(music)
 	time.sleep(5)
 	game_loop()
-
-def instructions():
-    while True:
-                for event in pygame.event.get():
-                        if event.type==pygame.QUIT:
-                                pygame.quit()
-                                quit()
-                gameDisplay.blit(rules,[0,0])
-                button("Back",1000,500,100,50,light_silver,dark_silver,intro)
-                pygame.display.update()
-                clock.tick(15)
-
 
 def intro():
 	while True:
@@ -220,7 +206,6 @@ def intro():
                 button("Play!!",300,450,100,50,bright_green,green,story_line)
                 button("Quit!",750,450,100,50,bright_red,red,gamequit)
 		button("Skip To Game",470,450,220,50,black,black,game_loop)
-		button("Rules",520,530,100,40,light_silver,dark_silver,instructions)
                 pygame.display.update()
                 clock.tick(15)
 
@@ -273,10 +258,6 @@ def game_over():
             TextRect=TextSurf.get_rect()
             TextRect.center=((display_width/2),(display_height/2))
             gameDisplay.blit(TextSurf,TextRect)
-            TextSurf=pygame.font.Font('freesansbold.ttf',50).render('Score :'+str(score),True,black)
-            TextRect=TextSurf.get_rect()
-            TextRect.center=((display_width/2),(display_height/2)+50)
-            gameDisplay.blit(TextSurf,TextRect)
             button("Play Again!!",400,450,200,50,bright_green,green,game_loop)
             button("Quit!",750,450,100,50,bright_red,red,gamequit)
             pygame.display.update()
@@ -309,9 +290,10 @@ def game_loop():
 	score=0
 	prev_score=0
 	bomb_left=0
-	bonus_score=200
-	bonus_c=0
-	start_y=200
+	file=open('high_score.txt','r+')
+	file.seek(0)
+	data=int(file.readline())
+	
 	while True:
 		blast=0
         	for event in pygame.event.get():
@@ -338,7 +320,7 @@ def game_loop():
                     if XnY[0]>display_width or XnY[1]>display_height or XnY[1]<0:
                         del bulletList[c]
                         del bulletList_slope[c]
-                        c-=1
+			c-=1
                     c += 1
 
                 c=0;
@@ -348,7 +330,7 @@ def game_loop():
                     if XnY[0]>display_width or XnY[1]>display_height or XnY[1]<0:
                         del bombList[c]
                         del bombList_slope[c]
-                        c-=1
+			c-=1
                     c += 1
             	gameDisplay.fill(black)
             	gameDisplay.blit(ground, [0,500])
@@ -362,11 +344,13 @@ def game_loop():
                 gameDisplay.blit(grass,[850,442])
                 gameDisplay.blit(grass,[260,442])
                 fire(bulletList,bombList)
-                gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('SCORE:'+str(score),True,red),[10,520])
-                gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('Tower_point:'+str(tower_point),True,red),[200,520])
+                gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('SCORE:'+str(score),True,black),[10,520])
+                gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('Tower_point:'+str(tower_point),True,black),[200,520])
+		gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('HIGH_SCORE:'+str(data),True,black),[600,520])
 		special_button(1100,10,gamepause,game_pause)
 		pygame.display.update()
 		special_button(1020,10,musicpause,music_pause)
+		file.close()
 
 		if len(thing_startx)==0:
                         thing_startx=random.sample(range(1200,2400),enemy_count)
@@ -396,24 +380,6 @@ def game_loop():
 			enemy_count=3
 		if score>400:
 			enemy_count=4
-
-
-                if score>=bonus_score and bonus_c==0:
-                    bonus_score +=200
-                    bonus_c=1
-                    start_y=200
-                    if tower_point<90:
-                        tower_point +=10
-
-                start_y-=5
-                if bonus_c==1:
-                    gameDisplay.blit(bonus,[210,start_y])
-                if start_y<0:
-                    bonus_c=0
-
-                pygame.display.update()
-
-		
 		hp_counter=1	
 	        i=0
 		while i<len(monster_identify):
@@ -443,8 +409,14 @@ def game_loop():
 			i+=1
 
                 if hp_counter==0:
-                    game_over_l()
-                                        
+			if score>data:
+				file=open('high_score.txt','r+')
+				file.seek(0)
+				file.write(str(score))
+				file.close()
+                	game_over_l()
+			    
+                           
 
 		
             	clock.tick(FPS)
@@ -452,3 +424,4 @@ def game_loop():
     
 
 intro()
+
