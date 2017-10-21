@@ -16,7 +16,7 @@ colour_sky=(0,100,200)
 display_width=1200
 display_height=600
 bullet_size=15
-FPS=30
+FPS=25
 castle=pygame.image.load('castle.png')
 clouds = pygame.image.load('clouds.png')
 gamename='RANDOM VARIABLE'
@@ -75,12 +75,13 @@ def destroy(bulletList,bulletList_slope,thing_startx, thing_starty1, thing_start
 	i=0
         while i<len(thing_startx):
             if monster_identify[i]==0:
-                if XnY[0]>=thing_startx[i] and XnY[0]<=thing_startx[i]+100  and XnY[1]>=thing_starty2 and XnY[1]<=thing_starty2+100:
+                if XnY[0]>=thing_startx[i] and XnY[0]<=thing_startx[i]+100  and XnY[1]>=thing_starty2[i] and XnY[1]<=thing_starty2[i]+100:
                     hit_point[i]-=1
                     del bulletList[c]
 		    del bulletList_slope[c]
                     if hit_point[i]==0:
                     	del thing_startx[i]
+			del thing_starty2[i]
 			del hit_point[i]
 			del monster_identify[i]
 			i-=1
@@ -94,6 +95,7 @@ def destroy(bulletList,bulletList_slope,thing_startx, thing_starty1, thing_start
                     	del thing_startx[i]
 			del hit_point[i]
 			del monster_identify[i]
+			del thing_starty2[i]
 			i-=1
 			score+=10
 	    i+=1
@@ -109,6 +111,7 @@ def story_line():
         pygame.mixer.Sound.stop(intro_sound)
 	pygame.mixer.Sound.play(music) 	
 	gameDisplay.blit(tower1,(0,0))
+	button("skip",1000,100,100,50,bright_green,green,game_loop)
 	pygame.display.update()
         time.sleep(10) 	
 	gameDisplay.blit(tower2,(0,0))
@@ -123,8 +126,8 @@ def story_line():
 	pygame.mixer.Sound.stop(music)	
 	gameDisplay.blit(tower5,(0,0))
 	pygame.display.update()
-	time.sleep(5)
 	pygame.mixer.Sound.stop(music)
+	time.sleep(5)
 	game_loop()
 
 def intro():
@@ -140,8 +143,9 @@ def intro():
 		TextRect=TextSurf.get_rect()
                 TextRect.center=((display_width/2),(display_height/2))
                 gameDisplay.blit(TextSurf,TextRect)
-                button("Play!!",450,450,100,50,bright_green,green,story_line)
+                button("Play!!",300,450,100,50,bright_green,green,story_line)
                 button("Quit!",750,450,100,50,bright_red,red,gamequit)
+		button("Skip To Game",470,450,220,50,black,black,game_loop)
                 pygame.display.update()
                 clock.tick(15)
 
@@ -167,9 +171,9 @@ def game_loop():
 	pygame.mixer.Sound.stop(intro_sound)
 	global score
         enemy_count=1
-        thing_startx=random.sample(range(1200,2400),enemy_count)
+        thing_startx=random.sample(range(1200,2000),enemy_count)
         thing_starty1=400
-	thing_starty2=150
+	thing_starty2=[150]
         x_change=-10
         lead_x=210
         lead_y=220
@@ -215,7 +219,7 @@ def game_loop():
                 gameDisplay.blit(grass,[260,442])
                 fire(bulletList)
                 gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('SCORE:'+str(score),True,red),[10,520])
-                gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('HP:'+str(tower_point),True,red),[200,520])
+                gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('Tower_point:'+str(tower_point),True,red),[200,520])
 
 		if len(thing_startx)==0:
                         thing_startx=random.sample(range(1200,2400),enemy_count)
@@ -223,31 +227,40 @@ def game_loop():
                                 x=random.choice([True,False])
                                 if x==True:
                                 	monster_identify.append(1)
+					thing_starty2.append(0)
 					hit_point.append(2)
                                 else:
                                 	monster_identify.append(0)
+					thing_starty2.append(random.randrange(150,300))
 					hit_point.append(3)
 
                 for i in range(0,len(thing_startx)):
                         if monster_identify[i]==1:
                                 gameDisplay.blit(monster_1,(thing_startx[i],thing_starty1))
                         else :
-                                gameDisplay.blit(dragon_1,(thing_startx[i],thing_starty2))
+                                gameDisplay.blit(dragon_1,(thing_startx[i],thing_starty2[i]))
                 for i in range(0,len(thing_startx)):
                         thing_startx[i]=thing_startx[i]+x_change
                 pygame.display.update()
  	        destroy(bulletList,bulletList_slope,thing_startx,thing_starty1,thing_starty2,monster_identify,hit_point)
                 if score>30:
                         enemy_count=2
-		else:
-			enemy_count=1
+		elif score>100:
+			enemy_count=4
+		elif score>200:
+			enemy_count=5
+		elif score>400:
+			enemy_count=7
 		hp_counter=1	
-	        for  i in range(0,len(monster_identify)):
+	        i=0
+		while i<len(monster_identify):
                         if monster_identify[i]==1:
 				if thing_startx[i]<249:
 					del thing_startx[i]
 					del monster_identify[i]
 					del hit_point[i]
+					del thing_starty2[i]
+					i-=1
 					tower_point-=10
 					if tower_point==0:
                                             hp_counter=0
@@ -258,10 +271,13 @@ def game_loop():
                                         del thing_startx[i]
 					del monster_identify[i]
 					del hit_point[i]
+					del thing_starty2[i]
 					tower_point-=10
+					i-=1
                                         if tower_point==0:
                                             hp_counter=0
                                             break
+			i+=1
 
                 if hp_counter==0:
                     game_over()
