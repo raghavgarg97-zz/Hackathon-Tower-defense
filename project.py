@@ -51,6 +51,23 @@ def fire(bulletList):
     for XnY in bulletList:
         pygame.draw.rect(gameDisplay,red,[XnY[0],XnY[1],bullet_size,bullet_size])   
 
+def destroy(bulletList, len(thing_startx), thing_starty1, thing_starty2,monster_identify, hit_point):
+    c=0
+    for XnY in bulletList:
+        for i in range(0, len(thing_startx)):
+            if monster_identify[i]==0:
+                if XnY[0]>=thing_startx[i] and XnY[0]<=thing_startx[i]+100  and XnY[1]>=thing_starty2 and XnY[1]<=thing_starty2+100:
+                    hit_poin[i]-=1
+                    del bulletList[c]
+                    if hit_point[i]==0:
+                    del thing_startx[i]t  
+            else:
+                if XnY[0]>=thing_startx[i] and XnY[0]<=thing_startx[i]+100  and XnY[1]>=thing_starty1 and XnY[1]<=thing_starty1+100:
+                    hit_poin[i]-=1
+                    del bulletList[c]
+                    if hit_point[i]==0:
+                    del thing_startx[i] 
+        c+=1
 
 
 def intro():
