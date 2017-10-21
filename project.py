@@ -41,6 +41,8 @@ tower4=pygame.image.load('tower4.jpg')
 tower4=tower4.convert()
 tower5=pygame.image.load('tower5.jpg')
 tower5=tower5.convert()
+ground = pygame.image.load('ground.png')
+grass = pygame.image.load('grass.jpg')
 
 
 def button(msg,x,y,w,h,ic,ac,action=None):
@@ -166,9 +168,10 @@ def game_loop():
                     		pygame.quit()
 				quit()
                         if event.type==pygame.MOUSEBUTTONDOWN:
-                            bulletList.append([lead_x,lead_y])
-                            mouse_x,mouse_y=pygame.mouse.get_pos()
-                            bulletList_slope.append((float)(mouse_y-lead_y)/(mouse_x-lead_x))
+                            if event.button == 1:
+                                bulletList.append([lead_x,lead_y])
+                                mouse_x,mouse_y=pygame.mouse.get_pos()
+                                bulletList_slope.append((float)(mouse_y-lead_y)/(mouse_x-lead_x))
 
                 c=0;
                 for XnY in bulletList:
@@ -180,13 +183,16 @@ def game_loop():
                     c += 1
 
             	gameDisplay.fill(black)
-            	pygame.draw.rect(gameDisplay,colour_ground,[0,500,1200,100])
+            	gameDisplay.blit(ground, [0,500])
                 pygame.draw.rect(gameDisplay,colour_sky,[0,0,1200,500])
                 gameDisplay.blit(castle,[10,105])
                 gameDisplay.blit(clouds, [50,0])
                 gameDisplay.blit(clouds, [550,00])
                 gameDisplay.blit(clouds, [400,40])
                 gameDisplay.blit(clouds, [1000,20])
+                gameDisplay.blit(grass,[400,442])
+                gameDisplay.blit(grass,[850,442])
+                gameDisplay.blit(grass,[260,442])
                 fire(bulletList)
                 gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('SCORE:'+str(score),True,red),[10,520])
 		if len(thing_startx)==0:
