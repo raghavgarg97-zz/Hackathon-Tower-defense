@@ -30,6 +30,14 @@ monster_1=pygame.image.load('monster_1.jpg')
 dragon_1=pygame.image.load('black_dragon.jpg')
 voice=pygame.mixer.music.load('game.mp3')
 score=0
+fireball=pygame.image.load('fireball.png')
+tower1=pygame.image.load('tower1.jpg')
+tower2=pygame.image.load('tower2.jpg')
+tower3=pygame.image.load('tower3.jpg')
+tower4=pygame.image.load('tower4.jpg')
+tower5=pygame.image.load('tower5.jpg')
+music=
+
 def button(msg,x,y,w,h,ic,ac,action=None):
         mouse=pygame.mouse.get_pos()
         click=pygame.mouse.get_pressed()
@@ -52,8 +60,13 @@ def gamequit():
 def destroy(bulletList,bulletList_slope,thing_startx, thing_starty1, thing_starty2,monster_identify, hit_point):
     c=0
     global score
+    for event in pygame.event.get():
+                        if event.type==pygame.QUIT:
+                                pygame.quit()
+                                quit()
     for XnY in bulletList:
-        for i in range(0, len(thing_startx)):
+	i=0
+        while i<len(thing_startx):
             if monster_identify[i]==0:
                 if XnY[0]>=thing_startx[i] and XnY[0]<=thing_startx[i]+100  and XnY[1]>=thing_starty2 and XnY[1]<=thing_starty2+100:
                     hit_point[i]-=1
@@ -76,11 +89,17 @@ def destroy(bulletList,bulletList_slope,thing_startx, thing_starty1, thing_start
 			del monster_identify[i]
 			i-=1
 			score+=10
+	    i+=1
         c+=1
+
 
 def fire(bulletList):
     for XnY in bulletList:
-        pygame.draw.rect(gameDisplay,red,[XnY[0],XnY[1],bullet_size,bullet_size])	
+        #pygame.draw.rect(gameDisplay,red,[XnY[0],XnY[1],bullet_size,bullet_size])
+	gameDisplay.blit(fireball,(XnY[0],XnY[1]))
+
+def story_line():
+	
 
 def intro():
 	while True:
@@ -95,7 +114,7 @@ def intro():
 		TextRect=TextSurf.get_rect()
                 TextRect.center=((display_width/2),(display_height/2))
                 gameDisplay.blit(TextSurf,TextRect)
-                button("Play!!",450,450,100,50,bright_green,green,game_loop)
+                button("Play!!",450,450,100,50,bright_green,green,store_line)
                 button("Quit!",750,450,100,50,bright_red,red,gamequit)
                 pygame.display.update()
                 clock.tick(15)
@@ -170,8 +189,7 @@ def game_loop():
                         enemy_count=2
 		else:
 			enemy_count=1
-
-		for i in range(0,len(monster_identify)):
+	        for  i in range(0,len(monster_identify)):
                         if monster_identify[i]==1:
 				if thing_startx[i]<249:
 					del thing_startx[i]
