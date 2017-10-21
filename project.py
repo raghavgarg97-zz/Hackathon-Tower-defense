@@ -108,6 +108,11 @@ def destroy(bulletList,bulletList_slope,bombList,bombList_slope,thing_startx, th
                     del monster_identify[i]
                     del hit_point[i]
                     score+=10
+                    if score-prev_score>=75:
+                            if bomb_left<3:
+                             bomb_left+=1
+                             prev_score=score
+
                     i-=1
                 i+=1
         c+=1
@@ -165,7 +170,6 @@ def story_line():
         pygame.mixer.Sound.stop(intro_sound)
 	pygame.mixer.Sound.play(music) 	
 	gameDisplay.blit(tower1,(0,0))
-	button("skip",1000,100,100,50,bright_green,green,game_loop)
 	pygame.display.update()
         time.sleep(10) 	
 	gameDisplay.blit(tower2,(0,0))
@@ -252,6 +256,10 @@ def game_over():
             TextRect=TextSurf.get_rect()
             TextRect.center=((display_width/2),(display_height/2))
             gameDisplay.blit(TextSurf,TextRect)
+            TextSurf=pygame.font.Font('freesansbold.ttf',50).render('Score :'+str(score),True,black)
+            TextRect=TextSurf.get_rect()
+            TextRect.center=((display_width/2),(display_height/2)+50)
+            gameDisplay.blit(TextSurf,TextRect)
             button("Play Again!!",400,450,200,50,bright_green,green,game_loop)
             button("Quit!",750,450,100,50,bright_red,red,gamequit)
             pygame.display.update()
@@ -310,6 +318,7 @@ def game_loop():
                     if XnY[0]>display_width or XnY[1]>display_height or XnY[1]<0:
                         del bulletList[c]
                         del bulletList_slope[c]
+                        c-=1
                     c += 1
 
                 c=0;
@@ -319,6 +328,7 @@ def game_loop():
                     if XnY[0]>display_width or XnY[1]>display_height or XnY[1]<0:
                         del bombList[c]
                         del bombList_slope[c]
+                        c-=1
                     c += 1
             	gameDisplay.fill(black)
             	gameDisplay.blit(ground, [0,500])
@@ -361,7 +371,7 @@ def game_loop():
                 pygame.display.update()
  	        destroy(bulletList,bulletList_slope,bombList,bombList_slope,thing_startx,thing_starty1,thing_starty2,monster_identify,hit_point)
                 if score>10:
-                        enemy_count=6
+                        enemy_count=2
 		if score>100:
 			enemy_count=3
 		if score>400:
