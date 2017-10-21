@@ -16,7 +16,7 @@ colour_sky=(0,100,200)
 display_width=1200
 display_height=600
 bullet_size=15
-FPS=20
+FPS=30
 castle=pygame.image.load('castle.png')
 clouds = pygame.image.load('clouds.png')
 gamename='RANDOM VARIABLE'
@@ -145,8 +145,26 @@ def intro():
                 pygame.display.update()
                 clock.tick(15)
 
+
+
+def game_over():
+
+        while True:
+            for event in pygame.event.get():
+                        if event.type==pygame.QUIT:
+                                pygame.quit()
+                                quit()
+            TextSurf=pygame.font.Font('freesansbold.ttf',50).render('Game Over',True,red)
+            TextRect=TextSurf.get_rect()
+            TextRect.center=((display_width/2),(display_height/2))
+            gameDisplay.blit(TextSurf,TextRect)
+            button("Play Again!!",450,450,200,50,bright_green,green,game_loop)
+            button("Quit!",750,450,100,50,bright_red,red,gamequit)
+            pygame.display.update()
+            clock.tick(15)
+
 def game_loop():
-	
+	pygame.mixer.Sound.stop(intro_sound)
 	global score
         enemy_count=1
         thing_startx=random.sample(range(1200,2400),enemy_count)
@@ -161,6 +179,8 @@ def game_loop():
 	monster_identify=[1]
 	hit_point=[2]
 	pygame.mixer.music.play()
+	tower_point=100
+	score=0
 	while True:
 		blast=0
         	for event in pygame.event.get():
@@ -195,6 +215,8 @@ def game_loop():
                 gameDisplay.blit(grass,[260,442])
                 fire(bulletList)
                 gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('SCORE:'+str(score),True,red),[10,520])
+                gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('HP:'+str(tower_point),True,red),[200,520])
+
 		if len(thing_startx)==0:
                         thing_startx=random.sample(range(1200,2400),enemy_count)
                         for i in range(0,len(thing_startx)):
@@ -219,19 +241,31 @@ def game_loop():
                         enemy_count=2
 		else:
 			enemy_count=1
+		hp_counter=1	
 	        for  i in range(0,len(monster_identify)):
                         if monster_identify[i]==1:
 				if thing_startx[i]<249:
 					del thing_startx[i]
 					del monster_identify[i]
 					del hit_point[i]
-					score-=10
+					tower_point-=10
+					if tower_point==0:
+                                            hp_counter=0
+                                            break
+					
 			else:
 				if thing_startx[i]<210:
                                         del thing_startx[i]
 					del monster_identify[i]
 					del hit_point[i]
-                                        score-=10
+					tower_point-=10
+                                        if tower_point==0:
+                                            hp_counter=0
+                                            break
+
+                if hp_counter==0:
+                    game_over()
+                                        
 
 		
             	clock.tick(FPS)
