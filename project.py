@@ -32,17 +32,18 @@ score=0
 music=pygame.mixer.Sound('story.wav')
 fireball=pygame.image.load('fireball.png')
 tower1=pygame.image.load('tower1.jpg')
-tower1=tower1.convert()
 tower2=pygame.image.load('tower2.jpg')
-tower2=tower2.convert()
 tower3=pygame.image.load('tower3.jpg')
-tower3=tower3.convert()
 tower4=pygame.image.load('tower4.jpg')
-tower4=tower4.convert()
 tower5=pygame.image.load('tower5.jpg')
-tower5=tower5.convert()
 ground = pygame.image.load('ground.png')
 grass = pygame.image.load('grass.jpg')
+gamepause= pygame.image.load('pause.jpg')
+musicpause=pygame.image.load('sound.jpg')
+blast=pygame.image.load('blast.gif')
+blast_sound=pygame.mixer.Sound('bomb.wav')
+pause=False
+p=1
 
 
 def button(msg,x,y,w,h,ic,ac,action=None):
@@ -59,6 +60,26 @@ def button(msg,x,y,w,h,ic,ac,action=None):
 	TextRect=TextSurf.get_rect()
         TextRect.center=(x+w/2,y+h/2)
         gameDisplay.blit(TextSurf,TextRect)
+
+def special_button(x,y,img_object,action=None):
+        mouse=pygame.mouse.get_pos()
+        click=pygame.mouse.get_pressed()
+        if x+30>mouse[0]>x and y+30>mouse[1]>y:
+                gameDisplay.blit(img_object,(x,y))
+                if click[0]==1 and action!=None:
+                        action()
+        else:
+		gameDisplay.blit(img_object,(x,y))
+
+def music_pause():
+	global p
+	if p==1:
+		pygame.mixer.music.pause()
+		p=p*(-1)
+	else:
+		pygame.mixer.music.unpause()
+		p=p*(-1)
+
 
 def gamequit():
 	pygame.quit()
@@ -149,23 +170,63 @@ def intro():
                 pygame.display.update()
                 clock.tick(15)
 
+def game_unpause():
+	global pause
+	pause=False
+	pygame.mixer.music.unpause()
+
+def game_pause():
+        
+	global  pause
+	pause=True
+	pygame.mixer.music.pause()
+        while pause:
+                for event in pygame.event.get():
+                        if event.type==pygame.QUIT:
+                                pygame.quit()
+                                quit()
+            	large_text=pygame.font.Font('freesansbold.ttf',50)
+                TextSurf=large_text.render("GAME PAUSED",True,white)
+		TextRect=TextSurf.get_rect()
+                TextRect.center=((display_width/2),(display_height/2))
+                gameDisplay.blit(TextSurf,TextRect)
+                button("CONTINUE",400,400,200,50,bright_green,green,game_unpause)
+                button("Quit!",700,400,100,50,bright_red,red,gamequit)
+                pygame.display.update()
+                clock.tick(15)
+
+def game_over_l():
+	pygame.mixer.music.stop()	
+	gameDisplay.fill(black)
+	pygame.mixer.Sound.play(blast_sound)
+	pygame.display.update()
+	time.sleep(8)
+	gameDisplay.blit(blast,(0,0))
+	pygame.display.update()
+	game_over()
+	
+	
+
 
 
 def game_over():
-
         while True:
             for event in pygame.event.get():
                         if event.type==pygame.QUIT:
                                 pygame.quit()
                                 quit()
-            TextSurf=pygame.font.Font('freesansbold.ttf',50).render('Game Over',True,red)
+		
+            TextSurf=pygame.font.Font('freesansbold.ttf',50).render('Game Over',True,black)
             TextRect=TextSurf.get_rect()
             TextRect.center=((display_width/2),(display_height/2))
             gameDisplay.blit(TextSurf,TextRect)
-            button("Play Again!!",450,450,200,50,bright_green,green,game_loop)
+            button("Play Again!!",400,450,200,50,bright_green,green,game_loop)
             button("Quit!",750,450,100,50,bright_red,red,gamequit)
             pygame.display.update()
             clock.tick(15)
+
+
+	
 
 def game_loop():
 	pygame.mixer.Sound.stop(intro_sound)
@@ -213,13 +274,16 @@ def game_loop():
                 gameDisplay.blit(clouds, [50,0])
                 gameDisplay.blit(clouds, [550,00])
                 gameDisplay.blit(clouds, [400,40])
-                gameDisplay.blit(clouds, [1000,20])
+                gameDisplay.blit(clouds, [1000,40])
                 gameDisplay.blit(grass,[400,442])
                 gameDisplay.blit(grass,[850,442])
                 gameDisplay.blit(grass,[260,442])
                 fire(bulletList)
                 gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('SCORE:'+str(score),True,red),[10,520])
                 gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('Tower_point:'+str(tower_point),True,red),[200,520])
+		special_button(1100,10,gamepause,game_pause)
+		pygame.display.update()
+		special_button(1020,10,musicpause,music_pause)
 
 		if len(thing_startx)==0:
                         thing_startx=random.sample(range(1200,2400),enemy_count)
@@ -243,14 +307,12 @@ def game_loop():
                         thing_startx[i]=thing_startx[i]+x_change
                 pygame.display.update()
  	        destroy(bulletList,bulletList_slope,thing_startx,thing_starty1,thing_starty2,monster_identify,hit_point)
-                if score>30:
-                        enemy_count=2
-		elif score>100:
+                if score>10:
+                        enemy_count=6
+		if score>100:
+			enemy_count=3
+		if score>400:
 			enemy_count=4
-		elif score>200:
-			enemy_count=5
-		elif score>400:
-			enemy_count=7
 		hp_counter=1	
 	        i=0
 		while i<len(monster_identify):
@@ -280,7 +342,7 @@ def game_loop():
 			i+=1
 
                 if hp_counter==0:
-                    game_over()
+                    game_over_l()
                                         
 
 		
