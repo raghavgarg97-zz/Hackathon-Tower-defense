@@ -1,4 +1,3 @@
-
 import pygame
 import time
 import random
@@ -28,15 +27,16 @@ intro_sound=pygame.mixer.Sound('intro_sound.wav')
 intro_background=pygame.image.load('game_intro.jpg')
 monster_1=pygame.image.load('monster_1.jpg')
 dragon_1=pygame.image.load('black_dragon.jpg')
-voice=pygame.mixer.music.load('game.mp3')
+pygame.mixer.music.load('game.mp3')
 score=0
+music=pygame.mixer.Sound('story.wav')
 fireball=pygame.image.load('fireball.png')
 tower1=pygame.image.load('tower1.jpg')
 tower2=pygame.image.load('tower2.jpg')
 tower3=pygame.image.load('tower3.jpg')
 tower4=pygame.image.load('tower4.jpg')
 tower5=pygame.image.load('tower5.jpg')
-music=
+
 
 def button(msg,x,y,w,h,ic,ac,action=None):
         mouse=pygame.mouse.get_pos()
@@ -95,11 +95,27 @@ def destroy(bulletList,bulletList_slope,thing_startx, thing_starty1, thing_start
 
 def fire(bulletList):
     for XnY in bulletList:
-        #pygame.draw.rect(gameDisplay,red,[XnY[0],XnY[1],bullet_size,bullet_size])
-	gameDisplay.blit(fireball,(XnY[0],XnY[1]))
+        gameDisplay.blit(fireball,(XnY[0],XnY[1]))
 
 def story_line():
-	
+        pygame.mixer.Sound.stop(intro_sound)
+	pygame.mixer.Sound.play(music)
+	gameDisplay.blit(tower1,(0,0))
+	pygame.display.update()
+	time.sleep(5)
+	gameDisplay.blit(tower2,(0,0))
+        pygame.display.update()
+	time.sleep(5)
+	gameDisplay.blit(tower3,(0,0))
+        pygame.display.update()
+        time.sleep(5)
+	gameDisplay.blit(tower4,(0,0))
+        pygame.display.update()
+        time.sleep(5)
+	gameDisplay.blit(tower5,(0,0))  
+        pygame.display.update()
+        time.sleep(5)
+	game_loop()
 
 def intro():
 	while True:
@@ -114,13 +130,13 @@ def intro():
 		TextRect=TextSurf.get_rect()
                 TextRect.center=((display_width/2),(display_height/2))
                 gameDisplay.blit(TextSurf,TextRect)
-                button("Play!!",450,450,100,50,bright_green,green,store_line)
+                button("Play!!",450,450,100,50,bright_green,green,story_line)
                 button("Quit!",750,450,100,50,bright_red,red,gamequit)
                 pygame.display.update()
                 clock.tick(15)
 
 def game_loop():
-	pygame.mixer.Sound.stop(intro_sound)
+	pygame.mixer.Sound.stop(music)
 	global score
         enemy_count=1
         thing_startx=random.sample(range(1200,2400),enemy_count)
