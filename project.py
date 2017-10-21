@@ -1,4 +1,3 @@
-
 import pygame
 import time
 import random
@@ -40,29 +39,31 @@ def button(msg,x,y,w,h,ic,ac,action=None):
                 pygame.draw.rect(gameDisplay,ic,(x,y,w,h))
         small_text=pygame.font.Font('freesansbold.ttf',30)
         TextSurf=small_text.render(msg,True,white)
-	TextRect=TextSurf.get_rect()
+        TextRect=TextSurf.get_rect()
         TextRect.center=(x+w/2,y+h/2)
         gameDisplay.blit(TextSurf,TextRect)
 
 def gamequit():
-	pygame.quit()
-	quit()
+    pygame.quit()
+    quit()
 
 def fire(bulletList):
     for XnY in bulletList:
-        pygame.draw.rect(gameDisplay,red,[XnY[0],XnY[1],bullet_size,bullet_size])	
+        pygame.draw.rect(gameDisplay,red,[XnY[0],XnY[1],bullet_size,bullet_size])   
+
+
 
 def intro():
-	while True:
+    while True:
                 for event in pygame.event.get():
                         if event.type==pygame.QUIT:
                                 pygame.quit()
                                 quit()
                 gameDisplay.blit(intro_background,(0,0))
-		pygame.mixer.Sound.play(intro_sound)
+                pygame.mixer.Sound.play(intro_sound)
                 large_text=pygame.font.Font('freesansbold.ttf',50)
                 TextSurf=large_text.render(gamename,True,white)
-		TextRect=TextSurf.get_rect()
+                TextRect=TextSurf.get_rect()
                 TextRect.center=((display_width/2),(display_height/2))
                 gameDisplay.blit(TextSurf,TextRect)
                 button("Play!!",450,450,100,50,bright_green,green,game_loop)
@@ -71,52 +72,55 @@ def intro():
                 clock.tick(15)
 
 def game_loop():
-	pygame.mixer.Sound.stop(intro_sound)
-	score=0
+        pygame.mixer.Sound.stop(intro_sound)
+        score=0
         enemy_count=1
         thing_startx=random.sample(range(1200,2400),enemy_count)
         thing_starty1=400
-	thing_starty2=150
+        thing_starty2=150
         x_change=-10
         lead_x=210
         lead_y=220
         lead_x_change=0
         bulletList=[]
         bulletList_slope=[]
-	monster_identify=[1]
+        monster_identify=[1]
 
-	while True:
-		blast=0
-        	for event in pygame.event.get():
-                	if event.type==pygame.QUIT:
-                    		pygame.quit()
-				quit()
-                        if event.type==pygame.MOUSEBUTTONDOWN:
+        while True:
+            blast=0
+            for event in pygame.event.get():
+                    if event.type==pygame.QUIT:
+                            pygame.quit()
+                            quit()
+                    if event.type==pygame.MOUSEBUTTONDOWN:
                             bulletList.append([lead_x,lead_y])
                             mouse_x,mouse_y=pygame.mouse.get_pos()
                             print mouse_x,mouse_y
                             bulletList_slope.append((float)(mouse_y-lead_y)/(mouse_x-lead_x))
 
-                c=0;
-                for XnY in bulletList:
+            c=0
+            for XnY in bulletList:
                     XnY[0] += bullet_size
                     XnY[1] += bullet_size*bulletList_slope[c]
+                    
                     if XnY[0]>display_width or XnY[1]>display_height or XnY[1]<0:
+
+
                         del bulletList[c]
                         del bulletList_slope[c]
                     c += 1
 
-            	gameDisplay.fill(black)
-            	pygame.draw.rect(gameDisplay,colour_ground,[0,500,1200,100])
-                pygame.draw.rect(gameDisplay,colour_sky,[0,0,1200,500])
-                gameDisplay.blit(castle,[10,105])
-                gameDisplay.blit(clouds, [50,0])
-                gameDisplay.blit(clouds, [550,00])
-                gameDisplay.blit(clouds, [400,40])
-                gameDisplay.blit(clouds, [1000,20])
-                fire(bulletList)
-                gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('SCORE:'+str(score),True,red),[10,520])
-		if len(thing_startx)==0:
+            gameDisplay.fill(black)
+            pygame.draw.rect(gameDisplay,colour_ground,[0,500,1200,100])
+            pygame.draw.rect(gameDisplay,colour_sky,[0,0,1200,500])
+            gameDisplay.blit(castle,[10,105])
+            gameDisplay.blit(clouds, [50,0])
+            gameDisplay.blit(clouds, [550,00])
+            gameDisplay.blit(clouds, [400,40])
+            gameDisplay.blit(clouds, [1000,20])
+            fire(bulletList)
+            gameDisplay.blit(pygame.font.Font('freesansbold.ttf',30).render('SCORE:'+str(score),True,red),[10,520])
+            if len(thing_startx)==0:
                         thing_startx=random.sample(range(1200,2400),enemy_count)
                         for i in range(0,len(thing_startx)):
                                 x=random.choice([True,False])
@@ -131,27 +135,27 @@ def game_loop():
                                         else:
                                                 monster.append(1)
 
-                for i in range(0,len(thing_startx)):
+            for i in range(0,len(thing_startx)):
                         if monster_identify[i]==1:
                                 gameDisplay.blit(monster_1,(thing_startx[i],thing_starty1))
                         else :
                                 gameDisplay.blit(dragon_1,(thing_startx[i],thing_starty2))
-                for i in range(0,len(thing_startx)):
+            for i in range(0,len(thing_startx)):
                         thing_startx[i]=thing_startx[i]+x_change
-                pygame.display.update()
-                if score>30:
+            pygame.display.update()
+            if score>30:
                         enemy_count+=1
                         thing_startx=random.sample(range(1200,2400),enemy_count)
-	    	pygame.display.update()
-		for i in range(0,len(thing_startx)):
-                        if thing_startx[i]<249:
-				del thing_startx[i]
-				blast=1
-				score-=10
-		if blast==1:
-			pygame.mixer.Sound.play(explosion)
-			blast=0
-            	clock.tick(FPS)
+            pygame.display.update()
+            for i in range(0,len(thing_startx)):
+                if thing_startx[i]<249:
+                    del thing_startx[i]
+                    blast=1
+                    score-=10
+            if blast==1:
+                pygame.mixer.Sound.play(explosion)
+                blast=0
+            clock.tick(FPS)
 
     
 
