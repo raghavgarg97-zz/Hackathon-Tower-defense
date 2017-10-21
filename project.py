@@ -113,10 +113,11 @@ def destroy(bulletList,bulletList_slope,bombList,bombList_slope,thing_startx, th
                     del monster_identify[i]
                     del hit_point[i]
                     score+=10
-                    if score-prev_score>=75:
-                            if bomb_left<3:
-                             bomb_left+=1
-                             prev_score=score
+                    if bomb_left==3:
+                        prev_score=score
+                    elif score-prev_score>=75:
+                        bomb_left+=1
+                        prev_score=score
 
                     i-=1
                 i+=1
@@ -138,10 +139,11 @@ def destroy(bulletList,bulletList_slope,bombList,bombList_slope,thing_startx, th
 			del monster_identify[i]
 			i-=1
 			score+=10
-			if score-prev_score>=75:
-                            if bomb_left<3:
-                             bomb_left+=1
-                             prev_score=score
+			if bomb_left==3:
+                            prev_score=score
+			elif score-prev_score>=75:
+                            bomb_left+=1
+                            prev_score=score
 			
             else:
                 if XnY[0]>=thing_startx[i] and XnY[0]<=thing_startx[i]+100  and XnY[1]>=thing_starty1 and XnY[1]<=thing_starty1+100:
@@ -156,10 +158,11 @@ def destroy(bulletList,bulletList_slope,bombList,bombList_slope,thing_startx, th
 			del thing_starty2[i]
 			i-=1
 			score+=10
-			if score-prev_score>=75:
-                            if bomb_left<3:
-                             bomb_left+=1
-                             prev_score=score
+			if bomb_left==3:
+                            prev_score=score
+			elif score-prev_score>=75:
+                            bomb_left+=1
+                            prev_score=score
 	    i+=1
         c+=1
 
