@@ -32,10 +32,15 @@ score=0
 music=pygame.mixer.Sound('story.wav')
 fireball=pygame.image.load('fireball.png')
 tower1=pygame.image.load('tower1.jpg')
+tower1=tower1.convert()
 tower2=pygame.image.load('tower2.jpg')
+tower2=tower2.convert()
 tower3=pygame.image.load('tower3.jpg')
+tower3=tower3.convert()
 tower4=pygame.image.load('tower4.jpg')
+tower4=tower4.convert()
 tower5=pygame.image.load('tower5.jpg')
+tower5=tower5.convert()
 
 
 def button(msg,x,y,w,h,ic,ac,action=None):
@@ -98,23 +103,26 @@ def fire(bulletList):
         gameDisplay.blit(fireball,(XnY[0],XnY[1]))
 
 def story_line():
+	i=1
         pygame.mixer.Sound.stop(intro_sound)
-	pygame.mixer.Sound.play(music)
+	pygame.mixer.Sound.play(music) 	
 	gameDisplay.blit(tower1,(0,0))
 	pygame.display.update()
-	time.sleep(5)
+        time.sleep(10) 	
 	gameDisplay.blit(tower2,(0,0))
-        pygame.display.update()
-	time.sleep(5)
+	pygame.display.update()
+	time.sleep(8)	
 	gameDisplay.blit(tower3,(0,0))
-        pygame.display.update()
-        time.sleep(5)
+	pygame.display.update()	
+	time.sleep(8)
 	gameDisplay.blit(tower4,(0,0))
-        pygame.display.update()
-        time.sleep(5)
-	gameDisplay.blit(tower5,(0,0))  
-        pygame.display.update()
-        time.sleep(5)
+	pygame.display.update()
+	time.sleep(5)
+	pygame.mixer.Sound.stop(music)	
+	gameDisplay.blit(tower5,(0,0))
+	pygame.display.update()
+	time.sleep(5)
+	pygame.mixer.Sound.stop(music)
 	game_loop()
 
 def intro():
@@ -136,7 +144,7 @@ def intro():
                 clock.tick(15)
 
 def game_loop():
-	pygame.mixer.Sound.stop(music)
+	
 	global score
         enemy_count=1
         thing_startx=random.sample(range(1200,2400),enemy_count)
