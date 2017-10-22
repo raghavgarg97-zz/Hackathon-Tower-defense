@@ -149,6 +149,7 @@ def destroy(bulletList,bulletList_slope,bombList,bombList_slope,thing_startx, th
                 if XnY[0]>=thing_startx[i] and XnY[0]<=thing_startx[i]+100  and XnY[1]>=thing_starty1 and XnY[1]<=thing_starty1+100:
                     hit_point[i]-=1
                     del bulletList[c]
+                    
 		    del bulletList_slope[c]
 		    c-=1
                     if hit_point[i]==0:
@@ -412,7 +413,7 @@ def game_loop():
                     bonus_score +=200
                     bonus_c=1
                     start_y=200
-                    if tower_point<90:
+                    if tower_point<=90:
                         tower_point +=10
 
                 start_y-=5
