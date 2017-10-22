@@ -404,6 +404,8 @@ def game_loop():
 			enemy_count=3
 		if score>400:
 			enemy_count=4
+		if score>1000:
+			enemy_count=6
 
 
                 if score>=bonus_score and bonus_c==0:
