@@ -22,7 +22,7 @@ bomb_size=20
 FPS=25
 castle=pygame.image.load('castle.png')
 clouds = pygame.image.load('clouds.png')
-gamename='RANDOM VARIABLE'
+gamename='MISSION SURVIVAL'
 explosion=pygame.mixer.Sound('explosion.wav')
 gameDisplay=pygame.display.set_mode((display_width,display_height));
 pygame.display.set_caption(gamename)
